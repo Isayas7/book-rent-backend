@@ -32,7 +32,7 @@ export const register = async (req, res) => {
     if (err instanceof z.ZodError) {
       return res.status(400).json({ message: "Invalid requested data" });
     }
-    res.status(500).json({ message: "Failed to create user!" });
+    res.status(500).json({ message: err });
   }
 };
 
