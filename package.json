@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon index.js",
+    "migrate":"prisma migrate deploy",
     "seed": "node seeder/seed.js"
   },
   "author": "",
