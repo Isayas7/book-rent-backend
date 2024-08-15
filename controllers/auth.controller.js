@@ -13,6 +13,12 @@ export const register = async (req, res) => {
 
     const { email, password, location, role } = validatedData;
 
+     const user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user) return res.status(400).json({ message: "user already exist!" });
+
     const hashedPassword = await bcrypt.hash(password, 10);
 
 
