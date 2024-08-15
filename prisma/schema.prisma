@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  OWNER
+  CUSTOMER
+}
+
+enum UserStatus {
+  APPROVE
+  APPROVED
+}
+
+enum BookStatus {
+  APPROVE
+  APPROVED
+}
+
+enum RentStatus {
+  BORROWED
+  RETURNED
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  email       String     @unique
+  username    String?
+  phoneNumber String?
+  password    String
+  role        UserRole
+  location    String
+  wallet      Float?     @default(0.00)
+  status      UserStatus @default(APPROVE)
+  books       Book[]
+  rentals     Rental[]
+}
+
+model Book {
+  id            Int        @id @default(autoincrement())
+  createdAt     DateTime   @default(now())
+  bookName      String     @unique
+  author        String
+  category      String
+  quantity      Int
+  rentPrice     Float
+  coverPhotoUrl String?
+  status        BookStatus @default(APPROVE)
+  isAvailable   Boolean    @default(true)
+  ownerId       Int
+  owner         User       @relation(fields: [ownerId], references: [id])
+  rentals       Rental[]
+}
+
+model Rental {
+  id              Int        @id @default(autoincrement())
+  transactionDate DateTime   @default(now())
+  status          RentStatus @default(BORROWED)
+  quantity        Int
+  rentPrice       Float
+  returnDate      DateTime
+  bookId          Int
+  renterId        Int
+  book            Book       @relation(fields: [bookId], references: [id])
+  renter          User       @relation(fields: [renterId], references: [id])
+}
