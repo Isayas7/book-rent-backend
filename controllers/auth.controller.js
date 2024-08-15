@@ -77,10 +77,13 @@ export const login = async (req, res) => {
     res
       .cookie("token", token, {
         httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'None',
         maxAge: age,
       })
       .status(200)
       .json({ ...userInfo });
+
   } catch (err) {
     if (err instanceof z.ZodError) {
       return res.status(400).json({ error: "Invalid requested data" });
