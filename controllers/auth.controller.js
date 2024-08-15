@@ -11,7 +11,7 @@ export const register = async (req, res) => {
     // HASH THE PASSWORD
     const validatedData = registerSchema.parse(req.body);
 
-    const { email, password, location, role } = validatedData;
+    const { email, password, location, phoneNumber, role } = validatedData;
 
      const user = await prisma.user.findUnique({
       where: { email },
@@ -28,6 +28,7 @@ export const register = async (req, res) => {
         email,
         role,
         location,
+        phoneNumber: phoneNumber,
         password: hashedPassword
       },
     });
