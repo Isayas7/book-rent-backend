@@ -51,14 +51,14 @@ export const login = async (req, res) => {
       where: { email },
     });
 
-    if (!user) return res.status(400).json({ message: "Invalid Credentials!" });
+   if (!user) return res.status(400).json({ message: "user does not exist!" });
 
     // CHECK IF THE PASSWORD IS CORRECT
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid)
-      return res.status(400).json({ message: "Invalid Credentials!" });
+      return res.status(400).json({ message: "password incrorrect!" });
 
     // GENERATE COOKIE TOKEN AND SEND TO THE USER
     const age = 1000 * 60 * 60 * 24 * 7;
