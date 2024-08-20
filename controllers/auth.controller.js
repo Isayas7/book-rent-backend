@@ -13,7 +13,7 @@ export const register = async (req, res) => {
 
     const { email, password, location, phoneNumber, role } = validatedData;
 
-     const user = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email },
     });
 
@@ -58,7 +58,7 @@ export const login = async (req, res) => {
       where: { email },
     });
 
-   if (!user) return res.status(400).json({ message: "user does not exist!" });
+    if (!user) return res.status(400).json({ message: "user does not exist!" });
 
     // CHECK IF THE PASSWORD IS CORRECT
 

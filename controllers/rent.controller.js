@@ -78,7 +78,6 @@ export const rentBook = async (req, res) => {
         if (err instanceof z.ZodError) {
             return res.status(400).json({ message: "Invalid request data", errors: err.errors });
         }
-        console.log(err);
         res.status(500).json({ message: "Failed to create rental" });
     }
 };

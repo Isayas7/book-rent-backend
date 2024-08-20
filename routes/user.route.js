@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.get("/ownerList", verifyToken, getOwners);
+router.get("/owner-list", verifyToken, getOwners);
 router.put("/status/:id", verifyToken, ownerStatus);
 router.delete("/:id", verifyToken, deleteOwner);
 

@@ -70,7 +70,7 @@ export const addBook = async (req, res) => {
 
     res.status(201).json(newBook);
   } catch (error) {
-    if (err instanceof z.ZodError) {
+    if (error instanceof z.ZodError) {
       return res.status(400).json({ message: "Invalid request data" });
     }
     res.status(500).json({ error: 'An error occurred while uploading the book' });
@@ -140,7 +140,6 @@ export const updateBook = async (req, res) => {
     res.status(201).json({ message: "Book updated successfully" });
 
   } catch (err) {
-    console.log("err", err);
     if (err instanceof z.ZodError) {
       return res.status(400).json({ message: "Invalid request data" });
     }
@@ -203,9 +202,10 @@ export const getOwnSingleBook = async (req, res) => {
       return res.status(404).json({ message: 'Book not found.' });
     }
 
+
     res.status(200).json({ data: ownSingleBook });
   } catch (err) {
-    console.error('Error fetching single book:', err); // Better logging
+    console.error('Error fetching single book:', err);
     res.status(500).json({ message: 'Failed to get the book.' });
   }
 };

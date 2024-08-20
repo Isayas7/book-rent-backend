@@ -107,7 +107,6 @@ export const deleteOwner = async (req, res) => {
 
         res.status(200).json({ message: "Owner deleted" });
     } catch (err) {
-        console.log(err);
         res.status(500).json({ message: "Failed to delete owner" });
     }
 };
