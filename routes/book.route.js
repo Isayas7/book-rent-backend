@@ -16,8 +16,8 @@ import upload from "../middleware/multer.js";
 
 const router = express.Router();
 
-router.post("/create", verifyToken, upload.single('cover'), addBook);
-router.put("/:id", verifyToken, upload.single('cover'), updateBook);
+router.post("/create", verifyToken, upload.single('coverPhotoUrl'), addBook);
+router.put("/:id", verifyToken, upload.single('coverPhotoUrl'), updateBook);
 router.delete("/:id", verifyToken, deleteBook);
 router.get("/single/:id", verifyToken, getOwnSingleBook);
 router.get("/own-books", verifyToken, getOwnBooks);
