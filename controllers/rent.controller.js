@@ -7,12 +7,12 @@ import { getEndOfMonth, getEndOfPreviousMonth, getStartOfMonth, getStartOfPrevio
 
 export const rentBook = async (req, res) => {
     const currentUser = req.user;
-    const id = parseInt(req.params.id)
+    const bookId = parseInt(req.params.id)
     const { quantity } = req.body;
 
     try {
         const book = await prisma.book.findUnique({
-            where: { id },
+            where: { id: bookId },
         });
 
         if (!book) {
@@ -24,6 +24,8 @@ export const rentBook = async (req, res) => {
                 message: "There are not enough books available",
             });
         }
+
+
 
         const owner = await prisma.user.findUnique({
             where: { id: book.ownerId },
@@ -43,19 +45,21 @@ export const rentBook = async (req, res) => {
                 rentPrice,
                 returnDate,
                 quantity,
-                bookId: id,
+                bookId: bookId,
             }
         });
 
 
         if (newRental) {
-            //update book quantity
+            // Calculate the remaining quantity
+            const remainingQuantity = book.quantity - quantity;
+
+            // Update book quantity and isAvailable status
             const updatedBook = await prisma.book.update({
-                where: { id },
+                where: { id: bookId },
                 data: {
-                    quantity: {
-                        decrement: newRental.quantity,
-                    },
+                    quantity: remainingQuantity,
+                    isAvailable: remainingQuantity > 0 ? true : false,
                 },
             });
 
@@ -83,13 +87,15 @@ export const rentBook = async (req, res) => {
 };
 
 
+
+
 export const returnBook = async (req, res) => {
-    const id = parseInt(req.params.id)
+    const rentalId = parseInt(req.params.id)
     const currentUser = req.user;
 
     try {
         const rental = await prisma.rental.findUnique({
-            where: { id },
+            where: { id: rentalId },
         });
 
         if (!rental) {
@@ -109,28 +115,33 @@ export const returnBook = async (req, res) => {
         }
 
         const updatedRental = await prisma.rental.update({
-            where: { id },
+            where: { id: rentalId },
             data: {
                 status: RentStatus.RETURNED,
             },
         });
 
-        //update book quantity
+
         const book = await prisma.book.findUnique({
             where: { id: rental.bookId },
         });
 
+
+
         if (book) {
+            // Calculate the current quantity
+            const currentQuantity = book.quantity + quantity;
+
+            // Update book quantity and isAvailable status
             const updatedBook = await prisma.book.update({
                 where: { id: rental.bookId },
                 data: {
-                    wallet: {
-                        increment: rental.quantity,
-                    },
-
+                    quantity: currentQuantity,
+                    isAvailable: true,
                 },
             });
         }
+
         res.json(rental);
     } catch (error) {
         console.log(error);
@@ -139,7 +150,8 @@ export const returnBook = async (req, res) => {
     }
 };
 
-export const ownRental = async (req, res) => {
+
+export const ownerRentalStatics = async (req, res) => {
     const currentUser = req.user;
 
     if (!currentUser) {
@@ -218,12 +230,12 @@ export const ownRental = async (req, res) => {
 
 
 
-export const rentalStatics = async (req, res) => {
+export const allRentalStatics = async (req, res) => {
 
     const currentUser = req.user;
 
     if (!currentUser) {
-        return res.status(400).json({ error: 'Owner ID is required' });
+        return res.status(400).json({ error: 'user ID is required' });
     }
     const ability = defineAbilityFor(currentUser);
     const isAllowed = ability.can('get', "revenue");

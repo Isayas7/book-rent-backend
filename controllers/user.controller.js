@@ -96,7 +96,7 @@ export const deleteOwner = async (req, res) => {
             return res.status(404).json({ message: "Owner not found" });
         }
 
-        // Optional: Delete related books
+        // frist delete related books
         await prisma.book.deleteMany({
             where: { ownerId: id },
         });

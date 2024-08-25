@@ -170,6 +170,11 @@ export const deleteBook = async (req, res) => {
     }
 
 
+    // frist  delete related rental 
+    await prisma.rental.deleteMany({
+      where: { bookId: id },
+    });
+
     await prisma.book.delete({
       where: { id },
     });
@@ -360,6 +365,7 @@ export const getAllBooks = async (req, res) => {
           select: {
             username: true,
             location: true,
+            email: true
           },
         },
         rentals: {
@@ -382,6 +388,7 @@ export const getAllBooks = async (req, res) => {
 
       return {
         ...book,
+        email: book.owner.email,
         username: book.owner.username,
         rentalStatus: rentalInfo.status,
         rentPrice: rentalInfo.rentPrice

@@ -95,7 +95,7 @@ export const login = async (req, res) => {
     if (err instanceof z.ZodError) {
       return res.status(400).json({ error: "Invalid requested data" });
     }
-    res.status(500).json({ message: "Failed to login!" });
+    res.status(500).json({ message: "Failed to login, try again!" });
   }
 };
 
